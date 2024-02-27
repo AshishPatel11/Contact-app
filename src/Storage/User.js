@@ -17,3 +17,9 @@ function isUnique(email) {
     const userData = getUserData()
     return !userData.find(user => user.email === email) ?? false;
 }
+export function getUser(user) {
+    const userData = getUserData();
+    const userFound = userData.find(users => users.email === user.email && users.password === user.password)
+    if (userFound) return { success: "Login successfull", user: userFound }
+    else return { error: "Invalid Credentials!" }
+}

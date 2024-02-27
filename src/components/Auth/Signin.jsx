@@ -1,6 +1,11 @@
-import { Link } from "react-router-dom";
+import { Form, Link, useActionData } from "react-router-dom";
 import logo from "../../assets/download.png";
+import Alert from "../Alert";
 function Signup() {
+    const actionData = useActionData();
+    if (actionData && actionData.success) {
+        return <Alert message={actionData.success} to="/home" />;
+    }
     return (
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -16,7 +21,7 @@ function Signup() {
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" action="#" method="POST">
+                    <Form className="space-y-6" method="post" replace>
                         <div>
                             <label
                                 htmlFor="email"
@@ -31,7 +36,7 @@ function Signup() {
                                     type="email"
                                     autoComplete="email"
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
@@ -52,7 +57,7 @@ function Signup() {
                                     type="password"
                                     autoComplete="current-password"
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
@@ -65,7 +70,7 @@ function Signup() {
                                 Sign In
                             </button>
                         </div>
-                    </form>
+                    </Form>
 
                     <p className="mt-10 text-center text-sm text-gray-500">
                         {"Don't have an account? "}

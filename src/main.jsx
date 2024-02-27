@@ -7,7 +7,7 @@ import Signup from "./components/Auth/Signup";
 import Signin from "./components/Auth/Signin";
 import Alert from "./components/Alert.jsx";
 import Home from "./components/Dashboard/Home.jsx";
-import signupAction from "./components/Auth/signupAction.js";
+import { signinAction, signupAction } from "./components/Auth/authActions.js";
 
 const router = createBrowserRouter([
     {
@@ -16,6 +16,8 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <Signin />,
+                action: signinAction,
+                errorElement: <Alert style={"Warning"} />,
             },
             {
                 path: "/signup",

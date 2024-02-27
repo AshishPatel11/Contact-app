@@ -1,6 +1,6 @@
-import { insertUser } from "../../Storage/User";
+import { getUser, insertUser } from "../../Storage/User";
 
-export default async function signupAction({ request }) {
+export async function signupAction({ request }) {
     const formData = await request.formData();
     let userData = {};
     for (const [key, value] of formData) {
@@ -16,5 +16,20 @@ export default async function signupAction({ request }) {
         } else {
             return response;
         }
+    }
+}
+
+export async function signinAction({ request }) {
+    const formData = await request.formData();
+    let user = {}
+    for (const [key, value] of formData) {
+        user = { ...user, [key]: value }
+    }
+    const response = getUser(user)
+    if (response.error) {
+        throw new Response(response.error)
+    }
+    else {
+        return response;
     }
 }

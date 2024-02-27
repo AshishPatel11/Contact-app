@@ -1,7 +1,12 @@
 import { useNavigate, useRouteError } from "react-router-dom";
 import Success from "../assets/Success";
 import Warning from "../assets/Warning";
+import { useEffect, useRef } from "react";
 function Alert({ style, message, to }) {
+    const Btn = useRef();
+    useEffect(() => {
+        Btn.current.focus();
+    }, []);
     const error = useRouteError();
     const navigate = useNavigate();
     return (
@@ -16,6 +21,7 @@ function Alert({ style, message, to }) {
                     </div>
                     <button
                         type="button"
+                        ref={Btn}
                         className="mt-3 w-20 justify-center text-center rounded-lg bg-neutral-100 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         onClick={() => navigate(to ? to : 0)}
                     >
