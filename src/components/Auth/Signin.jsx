@@ -1,7 +1,7 @@
 import { Form, Link, useActionData } from "react-router-dom";
 import logo from "../../assets/download.png";
 import Alert from "../Alert";
-function Signup() {
+function Signin() {
     const actionData = useActionData();
     if (actionData && actionData.success) {
         return <Alert message={actionData.success} to="/home" />;
@@ -75,7 +75,7 @@ function Signup() {
                     <p className="mt-10 text-center text-sm text-gray-500">
                         {"Don't have an account? "}
                         <Link
-                            to="/signup"
+                            to="signup"
                             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
                         >
                             Signup
@@ -86,5 +86,5 @@ function Signup() {
         </>
     );
 }
-
-export default Signup;
+Signin.displayName = "signin";
+export default Signin;

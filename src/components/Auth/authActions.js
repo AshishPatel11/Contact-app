@@ -1,4 +1,4 @@
-import { getUser, insertUser } from "../../Storage/User";
+import { getUser, insertUser, loginUser } from "../../Storage/User";
 
 export async function signupAction({ request }) {
     const formData = await request.formData();
@@ -14,6 +14,7 @@ export async function signupAction({ request }) {
         if (response.error) {
             throw new Response(response.error);
         } else {
+            loginUser(response.user.email)
             return response;
         }
     }
@@ -30,6 +31,7 @@ export async function signinAction({ request }) {
         throw new Response(response.error)
     }
     else {
+        loginUser(response.user.email)
         return response;
     }
 }
