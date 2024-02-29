@@ -35,5 +35,14 @@ export function updateContact(contact) {
     if (contact.image === null) contact.image = contacts[index].image
     contacts.splice(index, 1, contact)
     localStorage.setItem(key, JSON.stringify(contacts))
-    return { success: "Contact Added", contact: contact } && redirect("/home")
+    return { success: "Contact Edited", contact: contact } && redirect("/home")
+}
+export function deleteContact(contactId) {
+
+    const contacts = getContacts();
+    const index = contacts.findIndex(con => con.contactId === contactId)
+    contacts.splice(index, 1)
+    localStorage.setItem(key, JSON.stringify(contacts))
+    return { success: "Contact Deleted", contact: contactId }
+
 }
