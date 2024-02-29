@@ -1,4 +1,4 @@
-import { insertContact } from "../../Storage/Contact";
+import { insertContact, updateContact } from "../../Storage/Contact";
 
 export async function addContactAction({ request }) {
     const formData = await request.formData();
@@ -6,7 +6,6 @@ export async function addContactAction({ request }) {
     for (const [key, value] of formData) {
         ContactData = { ...ContactData, [key]: value };
     }
-    console.log(ContactData)
     if (ContactData.image.name) {
         ContactData.image = await readImage(ContactData.image)
     }
@@ -28,3 +27,25 @@ const readImage = (image) => new Promise((resolve, reject) => {
     reader.onerror = reject;
     reader.readAsDataURL(image);
 });
+
+export async function editContactAction({ request }) {
+    const formData = await request.formData();
+    let ContactData = {};
+    for (const [key, value] of formData) {
+        ContactData = { ...ContactData, [key]: value };
+    }
+    if (ContactData.image.name) {
+        ContactData.image = await readImage(ContactData.image)
+    }
+    else
+        ContactData.image = null
+    ContactData.userId = Number(ContactData.userId)
+    ContactData.contactId = Number(ContactData.contactId)
+    ContactData.phone = Number(ContactData.phone)
+    const response = updateContact(ContactData)
+    if (response.error) {
+        throw new Response(response.error);
+    } else {
+        return response;
+    }
+}

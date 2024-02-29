@@ -13,8 +13,11 @@ import Home from "./components/Dashboard/Home.jsx";
 import { signinAction, signupAction } from "./components/Auth/authActions.js";
 import Contacts from "./components/Contact/Contacts.jsx";
 import AddContact from "./components/Contact/AddContact.jsx";
-import { addContactAction } from "./components/Contact/contactActions.js";
-import { getContacts } from "./Storage/Contact.js";
+import {
+    addContactAction,
+    editContactAction,
+} from "./components/Contact/contactActions.js";
+import { getContact, getContacts } from "./Storage/Contact.js";
 import EditContact from "./components/Contact/EditContact.jsx";
 
 const router = createBrowserRouter([
@@ -60,6 +63,10 @@ const router = createBrowserRouter([
             {
                 path: "editContact/:contactId",
                 element: <EditContact />,
+                loader: ({ params }) => {
+                    return getContact(parseInt(params.contactId));
+                },
+                action: editContactAction,
             },
         ],
     },

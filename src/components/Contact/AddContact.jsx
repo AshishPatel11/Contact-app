@@ -1,14 +1,10 @@
-import { Form, useActionData } from "react-router-dom";
-import Alert from "../Alert";
+import { Form } from "react-router-dom";
 import { useContext } from "react";
 import { User } from "../../Context/context";
 
 function AddContact() {
-    const actionData = useActionData();
     const user = useContext(User);
-    if (actionData && actionData.success) {
-        return <Alert message={actionData.success} to="/home" />;
-    }
+
     return (
         <>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm border-2 border-slate-700 rounded-xl">

@@ -5,7 +5,7 @@ function Image({ src }) {
                 <img
                     src={src}
                     alt="avatar"
-                    className="w-14 h-14 rounded-full border-2 border-slate-800"
+                    className="w-14 h-14 rounded-full border-2 border-sky-500 object-cover object-center"
                 />
             ) : (
                 <svg

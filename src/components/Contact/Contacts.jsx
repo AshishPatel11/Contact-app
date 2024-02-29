@@ -1,6 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import ContactCard from "./ContactCard";
 import ContactHeader from "./ContactHeader";
+import ContactTable from "./ContactTable";
 
 function Contacts() {
     const contacts = useLoaderData();
@@ -26,7 +27,7 @@ function Contacts() {
     return (
         <>
             <ContactHeader />
-            {contactList}
+            <ContactTable>{contactList}</ContactTable>
         </>
     );
 }
