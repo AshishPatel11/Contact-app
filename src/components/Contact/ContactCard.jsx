@@ -1,34 +1,27 @@
-function ContactCard({ image, name, email, number }) {
+import { Link } from "react-router-dom";
+import Image from "./Image";
+
+function ContactCard({ image, name, email, number, contactId }) {
     return (
         <>
-            <div className="flex items-center justify-between text-left mx-24 my-3 border border-1 border-slate-600 rounded-xl p-1 px-5 cursor-pointer hover:bg-slate-300">
-                <div className="flex items-center">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1}
-                        stroke="currentColor"
-                        className="w-14 h-14"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                        />
-                    </svg>
+            <div className="flex items-center text-center justify-between mx-24 my-3 border border-1 border-slate-600 rounded-xl py-2 px-5 cursor-pointer hover:bg-slate-300">
+                <div className="flex items-center gap-2 basis-1/5 ">
+                    <Image src={image || null} />
                     <div>
                         <h1 className="font-semibold text-2xl">{name}</h1>
                     </div>
                 </div>
-                <div>
+                <div className="flex-1">
                     <h1 className="text-md text-sky-800">{email}</h1>
                 </div>
-                <div>
+                <div className="flex-1">
                     <h1 className="text-md text-slate-800">{number}</h1>
                 </div>
                 <div className="flex gap-3">
-                    <button className="flex gap-1 border-2 text-blue-700 bg-white border-blue-400 py-1 px-4 rounded-lg hover:ring-2 hover:ring-blue-300">
+                    <Link
+                        to={`editContact/${contactId}`}
+                        className="flex gap-1 border-2 text-blue-700 bg-white border-blue-400 py-1 px-4 rounded-lg hover:ring-2 hover:ring-blue-300"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -44,7 +37,7 @@ function ContactCard({ image, name, email, number }) {
                             />
                         </svg>
                         Edit
-                    </button>
+                    </Link>
                     <button className="flex gap-1 border-2 text-red-700 bg-white border-red-400 py-1 px-4 rounded-lg hover:ring-2 hover:ring-red-300">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

@@ -1,5 +1,6 @@
 const key = "users"
 const login = "loggedIn"
+
 export function insertUser(user) {
     const userData = getUserData()
     user.userId = Date.now()
@@ -11,6 +12,7 @@ export function insertUser(user) {
     else
         return { error: "Email Already Exist!" }
 }
+
 export function getUserData() {
     return JSON.parse(localStorage.getItem(key)) ?? []
 }
@@ -22,8 +24,8 @@ export function getUser(user) {
     else return { error: "Invalid Credentials!" }
 }
 
-export function loginUser(email) {
-    localStorage.setItem(login, JSON.stringify({ email: email }))
+export function loginUser(email, userId) {
+    localStorage.setItem(login, JSON.stringify({ email: email, userId: userId }))
 }
 
 function isUnique(email) {

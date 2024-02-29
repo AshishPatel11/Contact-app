@@ -1,8 +1,11 @@
 import { Form, useActionData } from "react-router-dom";
 import Alert from "../Alert";
+import { useContext } from "react";
+import { User } from "../../Context/context";
 
 function AddContact() {
     const actionData = useActionData();
+    const user = useContext(User);
     if (actionData && actionData.success) {
         return <Alert message={actionData.success} to="/home" />;
     }
@@ -19,6 +22,11 @@ function AddContact() {
                     encType="multipart/form-data"
                 >
                     <div>
+                        <input
+                            type="hidden"
+                            name="userId"
+                            value={user.userId}
+                        />
                         <label
                             htmlFor="name"
                             className="block font-medium leading-6 text-gray-900"

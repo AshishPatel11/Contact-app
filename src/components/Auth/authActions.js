@@ -14,7 +14,7 @@ export async function signupAction({ request }) {
         if (response.error) {
             throw new Response(response.error);
         } else {
-            loginUser(response.user.email)
+            loginUser(response.user.email, response.user.userId)
             return response;
         }
     }
@@ -31,7 +31,7 @@ export async function signinAction({ request }) {
         throw new Response(response.error)
     }
     else {
-        loginUser(response.user.email)
+        loginUser(response.user.email, response.user.userId)
         return response;
     }
 }
