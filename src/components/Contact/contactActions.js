@@ -1,4 +1,6 @@
-import { insertContact, updateContact } from "../../Storage/Contact";
+import { read, utils } from "xlsx";
+import { insertContact, insertContacts, updateContact } from "../../Storage/Contact";
+import { redirect } from "react-router-dom";
 
 export async function addContactAction({ request }) {
     const formData = await request.formData();
@@ -48,4 +50,26 @@ export async function editContactAction({ request }) {
     } else {
         return response;
     }
+}
+
+export async function importContactAction({ request }) {
+    const formData = await request.formData();
+    let file = {};
+    for (const [key, value] of formData) {
+        file = { ...file, [key]: value };
+    }
+    const arrayBuffer = await file.sheet.arrayBuffer()
+    let workbook = read(arrayBuffer);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    let contacts = utils.sheet_to_json(worksheet)
+
+    const newContacts = contacts.map(contact => {
+        const validContact = {}
+        for (const key in contact) {
+            validContact[key.toLowerCase()] = contact[key]
+        }
+        return validContact
+    })
+    const response = insertContacts(newContacts)
+    return response && redirect("/home")
 }

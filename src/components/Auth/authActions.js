@@ -1,5 +1,6 @@
 import { getUser, insertUser, loginUser } from "../../Storage/User";
 
+//Signup action method
 export async function signupAction({ request }) {
     const formData = await request.formData();
     let userData = {};
@@ -20,6 +21,7 @@ export async function signupAction({ request }) {
     }
 }
 
+//Signin action method
 export async function signinAction({ request }) {
     const formData = await request.formData();
     let user = {}

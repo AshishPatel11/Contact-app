@@ -1,4 +1,22 @@
+import { utils, writeFile } from "xlsx";
+import { userContacts } from "../../Storage/Contact";
+import { useNavigate } from "react-router-dom";
+
 function ContactHeader() {
+    const navigate = useNavigate();
+    const genContacts = () => {
+        const contacts = userContacts();
+        const contact = contacts.map((cont) => {
+            return { Name: cont.name, Email: cont.email, Phone: cont.phone };
+        });
+        const wb = utils.book_new(),
+            ws = utils.json_to_sheet(contact);
+
+        utils.book_append_sheet(wb, ws, "Contacts");
+
+        writeFile(wb, "Contacts.xlsx");
+    };
+
     return (
         <>
             <div className="flex items-center justify-between py-3 px-24">
@@ -57,6 +75,7 @@ function ContactHeader() {
                 <div className="flex gap-3 items-center">
                     <button
                         type="button"
+                        onClick={() => navigate("importContact")}
                         className="bg-white border-2 border-slate-600 px-2 py-1.5 rounded-lg flex items-center justify-between gap-1 focus:ring-4 focus:outline-none focus:ring-slate-300"
                     >
                         <svg
@@ -77,6 +96,7 @@ function ContactHeader() {
                     </button>
                     <button
                         type="button"
+                        onClick={genContacts}
                         className="bg-slate-600 px-3 py-2 rounded-lg text-white flex items-center justify-between gap-1 focus:ring-4 focus:outline-none focus:ring-slate-300"
                     >
                         <svg

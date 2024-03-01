@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import {
@@ -16,13 +15,19 @@ import AddContact from "./components/Contact/AddContact.jsx";
 import {
     addContactAction,
     editContactAction,
+    importContactAction,
 } from "./components/Contact/contactActions.js";
-import { getContact, getContacts } from "./Storage/Contact.js";
+import { getContacts, userContacts } from "./Storage/Contact.js";
 import EditContact from "./components/Contact/EditContact.jsx";
+import { currentUser, logoutUser } from "./Storage/User.js";
+import ImportContact from "./components/Contact/ImportContact.jsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
+        loader: () => {
+            return currentUser() && redirect("/home");
+        },
         children: [
             {
                 index: true,
@@ -51,7 +56,7 @@ const router = createBrowserRouter([
             {
                 path: "",
                 index: true,
-                loader: () => getContacts(),
+                loader: () => userContacts(),
                 element: <Contacts />,
             },
             {
@@ -64,15 +69,29 @@ const router = createBrowserRouter([
                 path: "editContact/:contactId",
                 element: <EditContact />,
                 loader: ({ params }) => {
-                    return getContact(parseInt(params.contactId));
+                    return getContacts(parseInt(params.contactId));
                 },
                 action: editContactAction,
+                errorElement: <Alert style={"Warning"} />,
+            },
+            {
+                path: "importContact",
+                element: <ImportContact />,
+                action: importContactAction,
+                errorElement: <Alert style={"Warning"} />,
             },
         ],
     },
+    {
+        path: "/logout",
+        loader: () => {
+            if (confirm("Are you sure you want to logout?")) {
+                logoutUser();
+                return redirect("/");
+            } else return redirect("/home");
+        },
+    },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
-        <RouterProvider router={router}></RouterProvider>
-    </React.StrictMode>
+    <RouterProvider router={router}></RouterProvider>
 );

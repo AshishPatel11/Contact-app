@@ -1,16 +1,36 @@
 import { useContext } from "react";
-import { Form, useLoaderData } from "react-router-dom";
+import { Form, useLoaderData, useNavigate } from "react-router-dom";
 import { User } from "../../Context/context";
 
 function EditContact() {
     const user = useContext(User);
     const contact = useLoaderData();
+    const navigate = useNavigate();
     return (
         <>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm border-2 border-slate-700 rounded-xl">
-                <h1 className="p-2 bg-slate-700 border-inherit rounded-t-lg  text-white">
-                    Edit Contact
-                </h1>
+                <div className="p-2 bg-slate-700 border-inherit rounded-t-lg  text-white flex items-center justify-between">
+                    <h1 className="">Edit Contact</h1>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="white"
+                        className="w-8 h-8 cursor-pointer"
+                        onClick={(e) => {
+                            navigate(-1);
+                            e.stopPropagation();
+                            e.preventDefault();
+                        }}
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                    </svg>
+                </div>
                 <Form
                     className="space-y-6 m-5"
                     method="post"
@@ -79,9 +99,15 @@ function EditContact() {
                             <input
                                 id="phone"
                                 name="phone"
-                                type="number"
+                                type="tel"
                                 required
                                 defaultValue={contact.phone}
+                                pattern="[0-9]{10}"
+                                onInvalid={(e) => {
+                                    e.target.setCustomValidity(
+                                        "Phone number must be 10 digits nubmers only"
+                                    );
+                                }}
                                 className="border-2 border-slate-600 rounded-md py-1 px-3 w-full"
                             />
                         </div>
