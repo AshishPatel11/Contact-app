@@ -108,6 +108,9 @@ function EditContact() {
                                         "Phone number must be 10 digits nubmers only"
                                     );
                                 }}
+                                onInput={(e) => {
+                                    e.target.setCustomValidity("");
+                                }}
                                 className="border-2 border-slate-600 rounded-md py-1 px-3 w-full"
                             />
                         </div>
@@ -137,7 +140,7 @@ function EditContact() {
                     focus-visible:outline-offset-2
                     focus-visible:outline-indigo-600`}
                         >
-                            Add Contact
+                            Edit Contact
                         </button>
                     </div>
                 </Form>

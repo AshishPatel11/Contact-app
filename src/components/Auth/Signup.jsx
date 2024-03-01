@@ -1,12 +1,8 @@
 import { Form, Link, useActionData } from "react-router-dom";
 import logo from "../../assets/download.png";
-import Alert from "../Alert";
 
 function Signup() {
     const actionData = useActionData();
-    if (actionData && actionData.success) {
-        return <Alert message={actionData.success} to="/home" />;
-    }
     return (
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -36,9 +32,24 @@ function Signup() {
                                     name="email"
                                     type="email"
                                     required
-                                    className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className={`block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6
+                                    ${
+                                        actionData
+                                            ? actionData.err.email
+                                                ? `border-red-500 text-red-600
+                                        focus:border-red-500 focus:ring-red-500`
+                                                : ""
+                                            : ""
+                                    } `}
                                 />
                             </div>
+                            <p className="mt-2  text-red-600 text-sm">
+                                {actionData
+                                    ? actionData.err
+                                        ? actionData.err.email
+                                        : ""
+                                    : ""}
+                            </p>
                         </div>
 
                         <div>
@@ -80,18 +91,18 @@ function Signup() {
                                     className={`peer mt-1 block w-full p-1.5 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
                                     focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 ${
                                         actionData
-                                            ? actionData.err
-                                                ? `border-pink-500 text-pink-600
-                                        focus:border-pink-500 focus:ring-pink-500`
+                                            ? actionData.err.password
+                                                ? `border-red-500 text-red-600
+                                        focus:border-red-500 focus:ring-red-500`
                                                 : ""
                                             : ""
                                     } `}
                                 />
-                                <p className="mt-2 text-pink-600 text-sm">
+                                <p className="mt-2  text-red-600 text-sm">
                                     {actionData
                                         ? actionData.err
-                                            ? actionData.err
-                                            : " "
+                                            ? actionData.err.password
+                                            : ""
                                         : ""}
                                 </p>
                             </div>

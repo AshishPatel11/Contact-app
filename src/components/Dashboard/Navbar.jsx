@@ -1,13 +1,19 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { toggleState } from "../../Context/context";
 
 function Navbar() {
+    const [formToggle, setFormToggle] = useContext(toggleState);
     return (
         <>
-            <nav className="bg-slate-700 text-neutral-200 flex items-center justify-between px-20 py-5">
-                <h1 className="text-2xl font-bold uppercase">Contact List</h1>
-                <div className="flex items-center gap-28">
-                    <Link
-                        to="addContact"
+            <nav className="bg-slate-700 text-neutral-200 flex items-center justify-between px-2 lg:px-20 py-5">
+                <h1 className="lg:text-2xl font-bold uppercase">Contact App</h1>
+                <div className="flex items-center lg:gap-28 gap-2">
+                    <button
+                        // to="addContact"
+                        onClick={() => {
+                            setFormToggle(!formToggle);
+                        }}
                         className=" border-2 border-white px-2 py-1.5 rounded-lg flex items-center justify-between gap-1 focus:ring-2 focus:outline-none focus:ring-slate-400"
                     >
                         <svg
@@ -25,7 +31,7 @@ function Navbar() {
                             />
                         </svg>
                         Add Contact
-                    </Link>
+                    </button>
                     <Link
                         to="/logout"
                         className=" border-2 border-red-300 text-red-300 px-2 py-1.5 rounded-lg flex items-center justify-between gap-1 focus:ring-1 focus:outline-none focus:ring-red-200"

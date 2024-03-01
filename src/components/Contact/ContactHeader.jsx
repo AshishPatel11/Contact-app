@@ -1,6 +1,6 @@
 import { utils, writeFile } from "xlsx";
 import { userContacts } from "../../Storage/Contact";
-import { useNavigate } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 
 function ContactHeader() {
     const navigate = useNavigate();
@@ -19,8 +19,11 @@ function ContactHeader() {
 
     return (
         <>
-            <div className="flex items-center justify-between py-3 px-24">
-                <form className="flex items-center max-w-sm my-2">
+            <div className="flex items-center justify-between py-3 px-24 flex-col gap-4 md:flex-row">
+                <Form
+                    action="/home"
+                    className="flex items-center max-w-sm my-2"
+                >
                     <label htmlFor="simpleSearch" className="sr-only">
                         Search
                     </label>
@@ -71,7 +74,7 @@ function ContactHeader() {
                         </svg>
                         <span className="sr-only">Search</span>
                     </button>
-                </form>
+                </Form>
                 <div className="flex gap-3 items-center">
                     <button
                         type="button"

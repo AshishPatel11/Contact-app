@@ -1,12 +1,7 @@
 import { Form, Link, useActionData } from "react-router-dom";
 import logo from "../../assets/download.png";
-import Alert from "../Alert";
 function Signin() {
     const actionData = useActionData();
-
-    if (actionData && actionData.success) {
-        return <Alert message={actionData.success} to="/home" />;
-    }
 
     return (
         <>
@@ -61,6 +56,13 @@ function Signin() {
                                     required
                                     className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
+                                <p className="mt-2  text-red-600 text-sm">
+                                    {actionData
+                                        ? actionData.err
+                                            ? actionData.err.email
+                                            : ""
+                                        : ""}
+                                </p>
                             </div>
                         </div>
 

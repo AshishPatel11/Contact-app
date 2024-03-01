@@ -11,7 +11,6 @@ import Alert from "./components/Alert.jsx";
 import Home from "./components/Dashboard/Home.jsx";
 import { signinAction, signupAction } from "./components/Auth/authActions.js";
 import Contacts from "./components/Contact/Contacts.jsx";
-import AddContact from "./components/Contact/AddContact.jsx";
 import {
     addContactAction,
     editContactAction,
@@ -21,6 +20,7 @@ import { getContacts, userContacts } from "./Storage/Contact.js";
 import EditContact from "./components/Contact/EditContact.jsx";
 import { currentUser, logoutUser } from "./Storage/User.js";
 import ImportContact from "./components/Contact/ImportContact.jsx";
+import NotFound from "./components/NotFound.jsx";
 
 const router = createBrowserRouter([
     {
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
         path: "/home",
         loader: () => {
             return (
-                JSON.parse(localStorage.getItem("loggedIn")) ??
+                currentUser() ??
                 (alert("Please Login to your account") || redirect("/"))
             );
         },
@@ -60,8 +60,7 @@ const router = createBrowserRouter([
                 element: <Contacts />,
             },
             {
-                path: "addContact",
-                element: <AddContact />,
+                path: "add-contact",
                 action: addContactAction,
                 errorElement: <Alert style={"Warning"} />,
             },
@@ -69,7 +68,10 @@ const router = createBrowserRouter([
                 path: "editContact/:contactId",
                 element: <EditContact />,
                 loader: ({ params }) => {
-                    return getContacts(parseInt(params.contactId));
+                    return (
+                        getContacts(parseInt(params.contactId)) ??
+                        redirect("not-found")
+                    );
                 },
                 action: editContactAction,
                 errorElement: <Alert style={"Warning"} />,
@@ -90,6 +92,10 @@ const router = createBrowserRouter([
                 return redirect("/");
             } else return redirect("/home");
         },
+    },
+    {
+        path: "*",
+        element: <NotFound />,
     },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

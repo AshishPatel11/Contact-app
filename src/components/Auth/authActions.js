@@ -1,3 +1,4 @@
+import { redirect } from "react-router-dom";
 import { getUser, insertUser, loginUser } from "../../Storage/User";
 
 //Signup action method
@@ -8,19 +9,18 @@ export async function signupAction({ request }) {
         userData = { ...userData, [key]: value };
     }
     if (userData.password !== userData.confirmPassword)
-        return { err: "password does not match" };
+        return { err: { password: "password does not match" } };
     else {
         const { email, password } = userData;
         const response = insertUser({ email, password });
         if (response.error) {
-            throw new Response(response.error);
+            return { err: { email: response.error } }
         } else {
-            loginUser(response.user.email, response.user.userId)
-            return response;
+            return response && (alert(response.success) || redirect("/"));
         }
     }
 }
-
+ 
 //Signin action method
 export async function signinAction({ request }) {
     const formData = await request.formData();
@@ -30,7 +30,7 @@ export async function signinAction({ request }) {
     }
     const response = getUser(user)
     if (response.error) {
-        throw new Response(response.error)
+        return { err: { email: response.error } }
     }
     else {
         loginUser(response.user.email, response.user.userId)
