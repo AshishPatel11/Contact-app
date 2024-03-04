@@ -1,13 +1,23 @@
-import { Link } from "react-router-dom";
 import Image from "./Image";
-import { deleteContact } from "../../Storage/Contact";
+import { deleteContact } from "../../Storage/contact";
 import { useState } from "react";
+import ContactForm from "./ContactForm";
+import { useNavigate } from "react-router-dom";
 
 function ContactCard({ image, name, email, number, contactId }) {
     const [isdeleted, setDelete] = useState(true);
+    const [showUpdate, setShowUpdate] = useState(false);
+    const navigate = useNavigate();
     if (isdeleted)
         return (
             <>
+                {showUpdate && (
+                    <ContactForm
+                        formType="update"
+                        formState={setShowUpdate}
+                        contactId={contactId}
+                    />
+                )}
                 <tr className="border-b bg-gray-800 border-gray-700  hover:bg-gray-600">
                     <th
                         scope="row"
@@ -26,8 +36,12 @@ function ContactCard({ image, name, email, number, contactId }) {
                     </td>
                     <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                            <Link
+                            <button
                                 to={`editContact/${contactId}`}
+                                onClick={() => {
+                                    setShowUpdate(!showUpdate);
+                                }}
+                                id={contactId}
                                 className="flex items-center gap-1 border-2 text-blue-700 bg-white border-blue-400 py-1 px-4 rounded-lg hover:ring-2 hover:ring-blue-300"
                             >
                                 <svg
@@ -45,7 +59,7 @@ function ContactCard({ image, name, email, number, contactId }) {
                                     />
                                 </svg>
                                 Edit
-                            </Link>
+                            </button>
                             <button
                                 onClick={() => {
                                     if (
@@ -53,8 +67,9 @@ function ContactCard({ image, name, email, number, contactId }) {
                                             "Do you want to delete this contact?"
                                         )
                                     ) {
-                                        deleteContact(contactId);
                                         setDelete(!isdeleted);
+                                        deleteContact(contactId);
+                                        navigate("/home");
                                     }
                                     return;
                                 }}

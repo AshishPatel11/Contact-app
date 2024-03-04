@@ -1,11 +1,17 @@
 import { utils, writeFile } from "xlsx";
-import { userContacts } from "../../Storage/Contact";
-import { Form, useNavigate } from "react-router-dom";
+import { userContacts } from "../../Storage/contact";
+import { Form } from "react-router-dom";
+import { useState } from "react";
+import ImportContact from "./ImportContact";
 
 function ContactHeader() {
-    const navigate = useNavigate();
+    const [showImport, setShowImport] = useState(false);
     const genContacts = () => {
         const contacts = userContacts();
+        if (!contacts.length) {
+            alert("No contacts available to export!");
+            return;
+        }
         const contact = contacts.map((cont) => {
             return { Name: cont.name, Email: cont.email, Phone: cont.phone };
         });
@@ -78,7 +84,7 @@ function ContactHeader() {
                 <div className="flex gap-3 items-center">
                     <button
                         type="button"
-                        onClick={() => navigate("importContact")}
+                        onClick={() => setShowImport(!showImport)}
                         className="bg-white border-2 border-slate-600 px-2 py-1.5 rounded-lg flex items-center justify-between gap-1 focus:ring-4 focus:outline-none focus:ring-slate-300"
                     >
                         <svg
@@ -119,6 +125,7 @@ function ContactHeader() {
                         Export
                     </button>
                 </div>
+                {showImport && <ImportContact state={setShowImport} />}
             </div>
         </>
     );

@@ -1,18 +1,18 @@
 import { Outlet, useLoaderData } from "react-router-dom";
 import Navbar from "./Navbar";
 import UserContextProvider from "../../Context/UserContextProvider";
-import ToggleStateProvider from "../../Context/ToggleStateProvider";
 import { useState } from "react";
+import IsSubmitProvider from "../../Context/IsSubmitProvider";
 function Home() {
     const user = useLoaderData();
-    const [formToggle, setFormToggle] = useState(false);
+    const [isSubmitted, setSubmitted] = useState(false);
     return (
         <>
             <UserContextProvider value={user}>
-                <ToggleStateProvider value={[formToggle, setFormToggle]}>
+                <IsSubmitProvider value={[isSubmitted, setSubmitted]}>
                     <Navbar />
                     <Outlet />
-                </ToggleStateProvider>
+                </IsSubmitProvider>
             </UserContextProvider>
         </>
     );

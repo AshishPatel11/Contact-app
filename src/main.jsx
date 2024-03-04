@@ -7,19 +7,11 @@ import {
 } from "react-router-dom";
 import Signup from "./components/Auth/Signup";
 import Signin from "./components/Auth/Signin";
-import Alert from "./components/Alert.jsx";
 import Home from "./components/Dashboard/Home.jsx";
 import { signinAction, signupAction } from "./components/Auth/authActions.js";
 import Contacts from "./components/Contact/Contacts.jsx";
-import {
-    addContactAction,
-    editContactAction,
-    importContactAction,
-} from "./components/Contact/contactActions.js";
-import { getContacts, userContacts } from "./Storage/Contact.js";
-import EditContact from "./components/Contact/EditContact.jsx";
-import { currentUser, logoutUser } from "./Storage/User.js";
-import ImportContact from "./components/Contact/ImportContact.jsx";
+import { userContacts } from "./Storage/contact.js";
+import { currentUser, logoutUser } from "./Storage/user.js";
 import NotFound from "./components/NotFound.jsx";
 
 const router = createBrowserRouter([
@@ -33,13 +25,11 @@ const router = createBrowserRouter([
                 index: true,
                 element: <Signin />,
                 action: signinAction,
-                errorElement: <Alert style={"Warning"} />,
             },
             {
                 path: "signup",
                 element: <Signup />,
                 action: signupAction,
-                errorElement: <Alert style={"Warning"} />,
             },
         ],
     },
@@ -54,33 +44,9 @@ const router = createBrowserRouter([
         element: <Home />,
         children: [
             {
-                path: "",
                 index: true,
                 loader: () => userContacts(),
                 element: <Contacts />,
-            },
-            {
-                path: "add-contact",
-                action: addContactAction,
-                errorElement: <Alert style={"Warning"} />,
-            },
-            {
-                path: "editContact/:contactId",
-                element: <EditContact />,
-                loader: ({ params }) => {
-                    return (
-                        getContacts(parseInt(params.contactId)) ??
-                        redirect("not-found")
-                    );
-                },
-                action: editContactAction,
-                errorElement: <Alert style={"Warning"} />,
-            },
-            {
-                path: "importContact",
-                element: <ImportContact />,
-                action: importContactAction,
-                errorElement: <Alert style={"Warning"} />,
             },
         ],
     },

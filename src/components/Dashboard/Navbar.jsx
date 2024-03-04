@@ -1,16 +1,15 @@
-import { useContext } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { toggleState } from "../../Context/context";
+import ContactForm from "../Contact/ContactForm";
 
 function Navbar() {
-    const [formToggle, setFormToggle] = useContext(toggleState);
+    const [formToggle, setFormToggle] = useState(false);
     return (
         <>
             <nav className="bg-slate-700 text-neutral-200 flex items-center justify-between px-2 lg:px-20 py-5">
                 <h1 className="lg:text-2xl font-bold uppercase">Contact App</h1>
                 <div className="flex items-center lg:gap-28 gap-2">
                     <button
-                        // to="addContact"
                         onClick={() => {
                             setFormToggle(!formToggle);
                         }}
@@ -54,6 +53,7 @@ function Navbar() {
                     </Link>
                 </div>
             </nav>
+            {formToggle && <ContactForm formState={setFormToggle} />}
         </>
     );
 }

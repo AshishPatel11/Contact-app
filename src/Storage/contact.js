@@ -1,15 +1,18 @@
 import { redirect } from "react-router-dom";
-import { currentUser } from "./User";
+import { currentUser } from "./user";
 const key = "contacts"
 
 //Insert new contact
 export function insertContact(contact) {
     const contacts = getContacts();
     contact.contactId = Math.floor(100000 + Math.random() * 900000)
+    contact.userId = parseInt(contact.userId)
+    contact.phone = parseInt(contact.phone)
+    contact.contactId = parseInt(contact.contactId)
     if (isUnique(contact.phone, contact.userId)) {
         contacts.push(contact);
         localStorage.setItem(key, JSON.stringify(contacts))
-        return { success: "Contact Added", contact: contact } && redirect("/home")
+        return { success: "Contact Added", contact: contact }
     }
     else
         return { error: "Contact Already Exist!" }
@@ -33,12 +36,17 @@ function isUnique(phone, userId) {
 //Update contact
 export function updateContact(contact) {
     const contacts = getContacts();
+    contact.userId = parseInt(contact.userId)
+    contact.phone = parseInt(contact.phone)
+    contact.contactId = parseInt(contact.contactId)
+
     const index = contacts.findIndex(con => con.contactId === contact.contactId)
     console.log(contact)
     if (contact.image === null) contact.image = contacts[index].image
+    if (contact.removeImage) contact.image = null
     contacts.splice(index, 1, contact)
     localStorage.setItem(key, JSON.stringify(contacts))
-    return { success: "Contact Edited", contact: contact } && redirect("/home")
+    return { success: "Contact Edited", contact: contact }
 }
 
 
@@ -48,7 +56,7 @@ export function deleteContact(contactId) {
     const index = contacts.findIndex(con => con.contactId === contactId)
     contacts.splice(index, 1)
     localStorage.setItem(key, JSON.stringify(contacts))
-    return { success: "Contact Deleted", contact: contactId }
+    return { success: "Contact Deleted", contact: contactId } && redirect("/home/")
 
 }
 

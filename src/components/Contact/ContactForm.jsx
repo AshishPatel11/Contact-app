@@ -1,25 +1,69 @@
-import { Form } from "react-router-dom";
-import { useContext } from "react";
-import { User, toggleState } from "../../Context/context";
+import { useEffect, useRef, useState } from "react";
+import { useSubmit, useUser } from "../../Context/context";
+import {
+    getContacts,
+    insertContact,
+    updateContact,
+} from "../../Storage/contact";
+import Image from "./Image";
+import { readImage } from "./readImage";
 
-function AddContact() {
-    const user = useContext(User);
-    const [, setFormToggle] = useContext(toggleState);
-    const hideForm = (e) => {
-        if (e.target.id === "form-container") {
-            setFormToggle((prev) => !prev);
+function ContactForm({ formType, formState, contactId }) {
+    const user = useUser();
+    const [, setSubmitted] = useSubmit();
+    const [contactData, setContactData] = useState({});
+    const [formError, setFormError] = useState(null);
+    const form = useRef();
+
+    useEffect(() => {
+        if (contactId) {
+            setContactData(getContacts(parseInt(contactId)));
+        }
+    }, [contactId]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form.current);
+        let contactData = Object.fromEntries(formData.entries());
+
+        if (contactData.image.name) {
+            contactData.image = await readImage(contactData.image);
+        } else contactData.image = null;
+
+        let response;
+        if (e.nativeEvent.submitter.value === "Edit Contact")
+            response = updateContact(contactData);
+        else response = insertContact(contactData);
+
+        if (response.error) setFormError({ err: response.error });
+        else {
+            setFormError(null);
+            formState(false);
+            setSubmitted((prev) => !prev);
         }
     };
+
+    const hideForm = (e) => {
+        if (e.target.id === "form-container") {
+            formState(false);
+            return;
+        }
+    };
+
     return (
         <>
             <div
                 id="form-container"
-                className="backdrop-blur-sm w-full h-screen fixed top-0 z-10 flex items-center justify-center"
+                className="backdrop-blur-sm w-full h-screen fixed top-0 left-0 z-10 flex items-center justify-center"
                 onClick={hideForm}
             >
                 <div className=" bg-white mt-10 sm:mx-auto sm:w-full sm:max-w-sm border-2 border-slate-700 rounded-xl">
                     <div className="p-2 bg-slate-700 border-inherit rounded-t-lg  text-white flex items-center justify-between">
-                        <h1 className="">Add Contact</h1>
+                        <h1 className="">
+                            {formType === "update"
+                                ? "Edit Contact"
+                                : "Add Contact"}
+                        </h1>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -28,7 +72,7 @@ function AddContact() {
                             stroke="white"
                             className="w-8 h-8 cursor-pointer"
                             onClick={(e) => {
-                                setFormToggle((prev) => !prev);
+                                if (formState) formState(false);
                                 e.stopPropagation();
                                 e.preventDefault();
                             }}
@@ -40,18 +84,25 @@ function AddContact() {
                             />
                         </svg>
                     </div>
-                    <Form
+                    <form
+                        ref={form}
                         className="space-y-6 m-5"
                         method="post"
-                        replace
-                        action="add-contact"
                         encType="multipart/form-data"
+                        onSubmit={handleSubmit}
                     >
-                        <div>
+                        <div className="text-slate-800 text-base">
+                            {formType && (
+                                <input
+                                    type="hidden"
+                                    name="contactId"
+                                    defaultValue={contactData.contactId}
+                                />
+                            )}
                             <input
                                 type="hidden"
                                 name="userId"
-                                value={user.userId}
+                                defaultValue={user.userId}
                             />
                             <label
                                 htmlFor="name"
@@ -65,12 +116,15 @@ function AddContact() {
                                     name="name"
                                     type="text"
                                     required
+                                    defaultValue={
+                                        formType ? contactData.name : ""
+                                    }
                                     className="border-2 border-slate-600 rounded-md py-1 px-3 w-full"
                                 />
                             </div>
                         </div>
 
-                        <div>
+                        <div className="text-slate-800 text-base">
                             <div className="flex items-center justify-between">
                                 <label
                                     htmlFor="email"
@@ -85,12 +139,14 @@ function AddContact() {
                                     name="email"
                                     type="email"
                                     required
-                                    defaultValue=""
+                                    defaultValue={
+                                        formType ? contactData.email : ""
+                                    }
                                     className="border-2 border-slate-600 rounded-md py-1 px-3 w-full"
                                 />
                             </div>
                         </div>
-                        <div>
+                        <div className="text-slate-800 text-base">
                             <div className="flex items-center justify-between">
                                 <label
                                     htmlFor="phone"
@@ -105,16 +161,28 @@ function AddContact() {
                                     name="phone"
                                     type="tel"
                                     required
-                                    defaultValue=""
+                                    defaultValue={
+                                        formType ? contactData.phone : ""
+                                    }
                                     pattern="[0-9]{10}"
                                     onInvalid={(e) => {
                                         e.target.setCustomValidity(
                                             "Phone number must be 10 digits nubmers only"
                                         );
                                     }}
+                                    onInput={(e) => {
+                                        e.target.setCustomValidity("");
+                                    }}
                                     className="border-2 border-slate-600 rounded-md py-1 px-3 w-full"
                                 />
                             </div>
+                            <p className="mt-2  text-red-600 text-sm">
+                                {formError
+                                    ? formError.err
+                                        ? formError.err
+                                        : ""
+                                    : ""}
+                            </p>
                         </div>
 
                         <div className="mb-3">
@@ -131,24 +199,49 @@ function AddContact() {
                                 name="image"
                             />
                         </div>
+                        {contactData.image && (
+                            <>
+                                <div className="flex items-center gap-1">
+                                    <input
+                                        type="checkbox"
+                                        id="removeImage"
+                                        name="removeImage"
+                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-xl focus:ring-blue-50 focus:ring-2"
+                                    />
+                                    <label
+                                        htmlFor="removeImage"
+                                        className="text-base block font-medium text-gray-900"
+                                    >
+                                        Remove Current Image
+                                    </label>
+                                </div>
+                                <div>
+                                    <Image src={contactData.image} alt="" />
+                                </div>
+                            </>
+                        )}
                         <div>
-                            <button
+                            <input
                                 type="submit"
+                                name="intent"
                                 className={`flex w-full justify-center rounded-md bg-indigo-600
                             px-3 py-1.5 text-sm font-semibold leading-6
                             text-white shadow-sm hover:bg-indigo-500
                             focus-visible:outline focus-visible:outline-2
                             focus-visible:outline-offset-2
-                            focus-visible:outline-indigo-600`}
-                            >
-                                Add Contact
-                            </button>
+                            focus-visible:outline-indigo-600 cursor-pointer`}
+                                value={
+                                    formType === "update"
+                                        ? "Edit Contact"
+                                        : "Add Contact"
+                                }
+                            />
                         </div>
-                    </Form>
+                    </form>
                 </div>
             </div>
         </>
     );
 }
 
-export default AddContact;
+export default ContactForm;

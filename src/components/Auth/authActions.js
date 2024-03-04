@@ -1,5 +1,5 @@
 import { redirect } from "react-router-dom";
-import { getUser, insertUser, loginUser } from "../../Storage/User";
+import { getUser, insertUser, loginUser } from "../../Storage/user";
 
 //Signup action method
 export async function signupAction({ request }) {
@@ -20,7 +20,7 @@ export async function signupAction({ request }) {
         }
     }
 }
- 
+
 //Signin action method
 export async function signinAction({ request }) {
     const formData = await request.formData();
