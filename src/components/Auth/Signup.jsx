@@ -34,7 +34,7 @@ function Signup() {
                                     required
                                     className={`block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6
                                     ${
-                                        actionData
+                                        actionData && actionData.err
                                             ? actionData.err.email
                                                 ? `border-red-500 text-red-600
                                         focus:border-red-500 focus:ring-red-500`
@@ -44,10 +44,10 @@ function Signup() {
                                 />
                             </div>
                             <p className="mt-2  text-red-600 text-sm">
-                                {actionData
-                                    ? actionData.err
-                                        ? actionData.err.email
-                                        : ""
+                                {actionData &&
+                                actionData.err &&
+                                actionData.err.email
+                                    ? actionData.err.email
                                     : ""}
                             </p>
                         </div>
@@ -90,7 +90,7 @@ function Signup() {
                                     required
                                     className={`peer mt-1 block w-full p-1.5 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
                                     focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 ${
-                                        actionData
+                                        actionData && actionData.err
                                             ? actionData.err.password
                                                 ? `border-red-500 text-red-600
                                         focus:border-red-500 focus:ring-red-500`
@@ -99,10 +99,10 @@ function Signup() {
                                     } `}
                                 />
                                 <p className="mt-2  text-red-600 text-sm">
-                                    {actionData
-                                        ? actionData.err
-                                            ? actionData.err.password
-                                            : ""
+                                    {actionData &&
+                                    actionData.err &&
+                                    actionData.err.password
+                                        ? actionData.err.password
                                         : ""}
                                 </p>
                             </div>

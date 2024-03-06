@@ -1,13 +1,12 @@
 import { redirect } from "react-router-dom";
 import { getUser, insertUser, loginUser } from "../../Storage/user";
+import { toast } from "react-toastify";
 
 //Signup action method
 export async function signupAction({ request }) {
     const formData = await request.formData();
-    let userData = {};
-    for (const [key, value] of formData) {
-        userData = { ...userData, [key]: value };
-    }
+    const userData = Object.fromEntries(formData.entries())
+
     if (userData.password !== userData.confirmPassword)
         return { err: { password: "password does not match" } };
     else {
@@ -16,7 +15,7 @@ export async function signupAction({ request }) {
         if (response.error) {
             return { err: { email: response.error } }
         } else {
-            return response && (alert(response.success) || redirect("/"));
+            return response && (toast.success(response.success) && redirect("/"));
         }
     }
 }
@@ -24,10 +23,7 @@ export async function signupAction({ request }) {
 //Signin action method
 export async function signinAction({ request }) {
     const formData = await request.formData();
-    let user = {}
-    for (const [key, value] of formData) {
-        user = { ...user, [key]: value }
-    }
+    const user = Object.fromEntries(formData.entries())
     const response = getUser(user)
     if (response.error) {
         return { err: { email: response.error } }

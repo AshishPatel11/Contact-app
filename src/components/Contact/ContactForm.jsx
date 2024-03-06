@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useSubmit, useUser } from "../../Context/context";
 import {
     getContacts,
@@ -7,24 +7,28 @@ import {
 } from "../../Storage/contact";
 import Image from "./Image";
 import { readImage } from "./readImage";
+import { toast } from "react-toastify";
 
 function ContactForm({ formType, formState, contactId }) {
+    //hooks declaration
     const user = useUser();
     const [, setSubmitted] = useSubmit();
     const [contactData, setContactData] = useState({});
     const [formError, setFormError] = useState(null);
     const form = useRef();
 
-    useEffect(() => {
+    //useEffect for fetching contact to be edited
+    useLayoutEffect(() => {
         if (contactId) {
             setContactData(getContacts(parseInt(contactId)));
         }
     }, [contactId]);
 
+    //Form submit event handler
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(form.current);
-        let contactData = Object.fromEntries(formData.entries());
+        const contactData = Object.fromEntries(formData.entries());
 
         if (contactData.image.name) {
             contactData.image = await readImage(contactData.image);
@@ -37,12 +41,14 @@ function ContactForm({ formType, formState, contactId }) {
 
         if (response.error) setFormError({ err: response.error });
         else {
+            toast.success(response.success, { autoClose: 1000 });
             setFormError(null);
             formState(false);
             setSubmitted((prev) => !prev);
         }
     };
 
+    //event handler to hide the form
     const hideForm = (e) => {
         if (e.target.id === "form-container") {
             formState(false);

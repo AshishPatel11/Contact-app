@@ -2,12 +2,14 @@ import Image from "./Image";
 import { deleteContact } from "../../Storage/contact";
 import { useState } from "react";
 import ContactForm from "./ContactForm";
-import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useSubmit } from "../../Context/context";
 
 function ContactCard({ image, name, email, number, contactId }) {
     const [isdeleted, setDelete] = useState(true);
+    const [, setSubmitted] = useSubmit();
     const [showUpdate, setShowUpdate] = useState(false);
-    const navigate = useNavigate();
+
     if (isdeleted)
         return (
             <>
@@ -69,7 +71,10 @@ function ContactCard({ image, name, email, number, contactId }) {
                                     ) {
                                         setDelete(!isdeleted);
                                         deleteContact(contactId);
-                                        navigate("/home");
+                                        toast.success("Contact Deleted!", {
+                                            autoClose: 1000,
+                                        });
+                                        setSubmitted((prev) => !prev);
                                     }
                                     return;
                                 }}

@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import UserContextProvider from "../../Context/UserContextProvider";
 import { useState } from "react";
 import IsSubmitProvider from "../../Context/IsSubmitProvider";
+import { ToastContainer } from "react-toastify";
 function Home() {
     const user = useLoaderData();
     const [isSubmitted, setSubmitted] = useState(false);
@@ -10,6 +11,7 @@ function Home() {
         <>
             <UserContextProvider value={user}>
                 <IsSubmitProvider value={[isSubmitted, setSubmitted]}>
+                    <ToastContainer />
                     <Navbar />
                     <Outlet />
                 </IsSubmitProvider>

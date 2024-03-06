@@ -2,17 +2,20 @@ import { useRef } from "react";
 import { read, utils } from "xlsx";
 import { insertContacts } from "../../Storage/contact";
 import { useSubmit } from "../../Context/context";
+import { toast } from "react-toastify";
 
 function ImportContact({ state }) {
     const importForm = useRef();
     const [, setSubmitted] = useSubmit();
+
+    //submit event handler
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData(importForm.current);
         const file = Object.fromEntries(formData.entries());
         const arrayBuffer = await file.sheet.arrayBuffer();
 
-        let workbook = read(arrayBuffer);
+        const workbook = read(arrayBuffer);
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const contacts = utils.sheet_to_json(worksheet);
 
@@ -24,22 +27,25 @@ function ImportContact({ state }) {
             return validContact;
         });
         insertContacts(newContacts);
+        toast.success("Contacts Imported!", { autoClose: 1000 });
         state(false);
         setSubmitted((prev) => !prev);
     };
 
+    //hide form on event
     const hideForm = (e) => {
         if (e.target.id === "form-container") {
             state(false);
         }
     };
+
     return (
         <div
             id="form-container"
-            className="backdrop-blur-sm w-full h-screen fixed top-0 left-0 z-10 flex items-center justify-center"
+            className="backdrop-blur-sm lg:w-full w-screen h-screen fixed top-0 left-0 z-10 flex items-center justify-center"
             onClick={hideForm}
         >
-            <div className="bg-white w-1/3 relative flex rounded-xl z-10">
+            <div className="bg-white lg:w-1/3 w-1/2 relative flex rounded-xl z-10">
                 <form
                     ref={importForm}
                     className="w-full"
@@ -104,7 +110,7 @@ function ImportContact({ state }) {
                         />
                         <button
                             type="submit"
-                            className={`flex self-end bottom-1 mx-1.5 my-1 justify-center rounded-md bg-indigo-600
+                            className={`flex bottom-0 mt-2 my-1 justify-center rounded-md bg-indigo-600
                                 px-3 py-1.5 text-sm font-semibold leading-6
                                 text-white shadow-sm hover:bg-indigo-500
                                 focus-visible:outline focus-visible:outline-2
@@ -119,5 +125,7 @@ function ImportContact({ state }) {
         </div>
     );
 }
-
+ImportContact.propType = {
+    state: String,
+};
 export default ImportContact;

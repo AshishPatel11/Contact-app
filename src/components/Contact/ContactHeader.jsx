@@ -1,11 +1,19 @@
 import { utils, writeFile } from "xlsx";
 import { userContacts } from "../../Storage/contact";
-import { Form } from "react-router-dom";
 import { useState } from "react";
 import ImportContact from "./ImportContact";
+import { toast } from "react-toastify";
 
-function ContactHeader() {
+function ContactHeader({ searchData }) {
     const [showImport, setShowImport] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        searchData(formData.get("search").trim() || null);
+    };
+
+    //Export contact to excel
     const genContacts = () => {
         const contacts = userContacts();
         if (!contacts.length) {
@@ -21,14 +29,15 @@ function ContactHeader() {
         utils.book_append_sheet(wb, ws, "Contacts");
 
         writeFile(wb, "Contacts.xlsx");
+        toast.success("Contact Exported!");
     };
 
     return (
         <>
-            <div className="flex items-center justify-between py-3 px-24 flex-col gap-4 md:flex-row">
-                <Form
-                    action="/home"
+            <div className="flex items-center justify-between py-3 px-20 flex-col gap-4 md:flex-row">
+                <form
                     className="flex items-center max-w-sm my-2"
+                    onSubmit={handleSubmit}
                 >
                     <label htmlFor="simpleSearch" className="sr-only">
                         Search
@@ -54,33 +63,43 @@ function ContactHeader() {
                         <input
                             type="text"
                             id="simpleSearch"
+                            name="search"
                             className="bg-gray-50 border border-slate-600 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  "
                             placeholder="Search ..."
                             required
                         />
                     </div>
-                    <button
-                        type="submit"
-                        className="p-3 ms-2 text-sm font-medium text-white bg-slate-600 rounded-lg border border-slate-500 hover:bg-slate-700 focus:ring-4 focus:outline-none focus:ring-slate-300"
-                    >
-                        <svg
-                            className="w-4 h-4"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 20 20"
+                    <div className="flex items-center">
+                        <button
+                            type="submit"
+                            className="p-3 ms-2 text-sm font-medium text-white bg-slate-600 rounded-lg border border-slate-500 hover:bg-slate-700 focus:ring-2 focus:outline-none focus:ring-slate-300"
                         >
-                            <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                            />
-                        </svg>
-                        <span className="sr-only">Search</span>
-                    </button>
-                </Form>
+                            <svg
+                                className="w-4 h-4"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 20 20"
+                            >
+                                <path
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                                />
+                            </svg>
+                            <span className="sr-only">Search</span>
+                        </button>
+                        <button
+                            type="reset"
+                            onClick={() => searchData(null)}
+                            className="p-3 text-neutral-900 ms-2 border rounded-lg w-32 bg-red-400 font-normal text-sm hover:bg-red-300 focus:ring-2 focus:outline-none focus:ring-slate-300"
+                        >
+                            Clear Search
+                        </button>
+                    </div>
+                </form>
                 <div className="flex gap-3 items-center">
                     <button
                         type="button"

@@ -13,6 +13,8 @@ import Contacts from "./components/Contact/Contacts.jsx";
 import { userContacts } from "./Storage/contact.js";
 import { currentUser, logoutUser } from "./Storage/user.js";
 import NotFound from "./components/NotFound.jsx";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
     {
@@ -65,5 +67,8 @@ const router = createBrowserRouter([
     },
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <RouterProvider router={router}></RouterProvider>
+    <>
+        <ToastContainer />
+        <RouterProvider router={router}></RouterProvider>
+    </>
 );

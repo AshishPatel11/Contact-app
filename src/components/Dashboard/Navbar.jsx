@@ -4,16 +4,17 @@ import ContactForm from "../Contact/ContactForm";
 
 function Navbar() {
     const [formToggle, setFormToggle] = useState(false);
+
     return (
         <>
-            <nav className="bg-slate-700 text-neutral-200 flex items-center justify-between px-2 lg:px-20 py-5">
+            <nav className="bg-slate-700 sticky top-0 text-neutral-200 flex items-center justify-between px-20 lg:px-24 py-5 z-10 shadow-xl">
                 <h1 className="lg:text-2xl font-bold uppercase">Contact App</h1>
                 <div className="flex items-center lg:gap-28 gap-2">
                     <button
                         onClick={() => {
                             setFormToggle(!formToggle);
                         }}
-                        className=" border-2 border-white px-2 py-1.5 rounded-lg flex items-center justify-between gap-1 focus:ring-2 focus:outline-none focus:ring-slate-400"
+                        className=" border-2 border-white px-2 py-1.5 rounded-lg flex items-center w-36 justify-between gap-1 focus:ring-2 focus:outline-none focus:ring-slate-400"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

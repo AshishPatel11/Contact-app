@@ -1,8 +1,8 @@
-import { User } from "./context";
+import { user } from "./context";
 function UserContextProvider({ children, value }) {
     return (
         <>
-            <User.Provider value={value}>{children}</User.Provider>
+            <user.Provider value={value}>{children}</user.Provider>
         </>
     );
 }

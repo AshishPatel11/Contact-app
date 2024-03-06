@@ -1,4 +1,3 @@
-import { redirect } from "react-router-dom";
 import { currentUser } from "./user";
 const key = "contacts"
 
@@ -12,7 +11,7 @@ export function insertContact(contact) {
     if (isUnique(contact.phone, contact.userId)) {
         contacts.push(contact);
         localStorage.setItem(key, JSON.stringify(contacts))
-        return { success: "Contact Added", contact: contact }
+        return { success: "Contact Added!", contact: contact }
     }
     else
         return { error: "Contact Already Exist!" }
@@ -41,12 +40,11 @@ export function updateContact(contact) {
     contact.contactId = parseInt(contact.contactId)
 
     const index = contacts.findIndex(con => con.contactId === contact.contactId)
-    console.log(contact)
     if (contact.image === null) contact.image = contacts[index].image
     if (contact.removeImage) contact.image = null
     contacts.splice(index, 1, contact)
     localStorage.setItem(key, JSON.stringify(contacts))
-    return { success: "Contact Edited", contact: contact }
+    return { success: "Contact Edited!", contact: contact }
 }
 
 
@@ -56,7 +54,7 @@ export function deleteContact(contactId) {
     const index = contacts.findIndex(con => con.contactId === contactId)
     contacts.splice(index, 1)
     localStorage.setItem(key, JSON.stringify(contacts))
-    return { success: "Contact Deleted", contact: contactId } && redirect("/home/")
+    return { success: "Contact Deleted!", contact: contactId }
 
 }
 
@@ -68,6 +66,13 @@ export function userContacts() {
     return userContacts
 }
 
+export function searchContact(query) {
+    const contacts = userContacts()
+    if (!isNaN(parseInt(query))) {
+        return contacts.filter(contact => String(contact.phone).includes(query))
+    }
+    return contacts.filter(contact => contact.name.toLowerCase().includes(query.toLowerCase()) || contact.email.toLowerCase().includes(query.toLowerCase()))
+}
 //Insert contact from the imported excel
 export function insertContacts(contacts) {
     const allContacts = getContacts()

@@ -8,7 +8,7 @@ export function insertUser(user) {
     if (isUnique(user.email)) {
         userData.push(user);
         localStorage.setItem(key, JSON.stringify(userData))
-        return { success: "Registration Successfull", user: user }
+        return { success: "Registration Successful", user: user }
     }
     else
         return { error: "Email Already Exist!" }
@@ -23,7 +23,7 @@ export function getUserData() {
 export function getUser(user) {
     const userData = getUserData();
     const userFound = userData.find(users => users.email === user.email && users.password === user.password)
-    if (userFound) return { success: "Login successfull", user: userFound }
+    if (userFound) return { success: "Login successful", user: userFound }
     else return { error: "Invalid Credentials!" }
 }
 
