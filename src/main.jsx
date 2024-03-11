@@ -8,13 +8,15 @@ import {
 import Signup from './components/Auth/Signup';
 import Signin from './components/Auth/Signin';
 import Home from './components/Dashboard/Home.jsx';
-import { signinAction, signupAction } from './components/Auth/authActions.js';
 import Contacts from './components/Contact/Contacts.jsx';
 import { userContacts } from './Storage/contact.js';
 import { currentUser, logoutUser } from './Storage/user.js';
 import NotFound from './components/NotFound.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import RequiredAuth from './components/Auth/RequiredAuth.jsx';
+import UserContextProvider from './Context/UserContextProvider.jsx';
+import IsSubmitProvider from './Context/IsSubmitProvider.jsx';
 
 const router = createBrowserRouter([
   {
@@ -26,29 +28,26 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Signin />,
-        action: signinAction,
       },
       {
         path: 'signup',
         element: <Signup />,
-        action: signupAction,
       },
     ],
   },
   {
-    path: '/home',
-    loader: () => {
-      return (
-        currentUser() ??
-        (alert('Please Login to your account') || redirect('/'))
-      );
-    },
-    element: <Home />,
+    element: <RequiredAuth />,
     children: [
       {
-        index: true,
-        loader: () => userContacts(),
-        element: <Contacts />,
+        path: '/home',
+        element: <Home />,
+        children: [
+          {
+            index: true,
+            loader: () => userContacts(),
+            element: <Contacts />,
+          },
+        ],
       },
     ],
   },
@@ -68,7 +67,11 @@ const router = createBrowserRouter([
 ]);
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
-    <ToastContainer />
-    <RouterProvider router={router}></RouterProvider>
+    <UserContextProvider>
+      <IsSubmitProvider>
+        <ToastContainer />
+        <RouterProvider router={router}></RouterProvider>
+      </IsSubmitProvider>
+    </UserContextProvider>
   </>
 );

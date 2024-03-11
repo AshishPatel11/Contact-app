@@ -46,4 +46,5 @@ export function currentUser() {
 //Logout user
 export function logoutUser() {
     localStorage.removeItem(login)
+    return true
 }

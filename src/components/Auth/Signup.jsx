@@ -1,8 +1,32 @@
-import { Form, Link, useActionData } from 'react-router-dom';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import logo from '../../assets/download.png';
+import { useRef, useState } from 'react';
+import { insertUser } from '../../Storage/user';
+import { toast } from 'react-toastify';
 
 function Signup() {
-  const actionData = useActionData();
+  const [actionData, setActionData] = useState(null);
+  const form = useRef();
+  const navigate = useNavigate();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(form.current);
+    const userData = Object.fromEntries(formData.entries());
+
+    if (userData.password !== userData.confirmPassword)
+      setActionData({ err: { password: 'password does not match' } });
+    else {
+      const { email, password } = userData;
+      const response = insertUser({ email, password });
+      if (response.error) {
+        setActionData({ err: { email: response.error } });
+      } else {
+        toast.success(response.success);
+        navigate('/', { replace: true });
+      }
+    }
+  };
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -14,7 +38,12 @@ function Signup() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <Form className="space-y-6" method="post" replace>
+          <form
+            ref={form}
+            className="space-y-6"
+            method="post"
+            onSubmit={handleSubmit}
+          >
             <div>
               <label
                 htmlFor="email"
@@ -113,7 +142,7 @@ function Signup() {
                 Sign Up
               </button>
             </div>
-          </Form>
+          </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
             {'Already have an account? '}
@@ -129,5 +158,4 @@ function Signup() {
     </>
   );
 }
-// Signup.displayName="SignupPage"
 export default Signup;

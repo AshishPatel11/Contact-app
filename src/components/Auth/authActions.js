@@ -19,17 +19,3 @@ export async function signupAction({ request }) {
         }
     }
 }
-
-//Signin action method
-export async function signinAction({ request }) {
-    const formData = await request.formData();
-    const user = Object.fromEntries(formData.entries())
-    const response = getUser(user)
-    if (response.error) {
-        return { err: { email: response.error } }
-    }
-    else {
-        loginUser(response.user.email, response.user.userId)
-        return response;
-    }
-}
