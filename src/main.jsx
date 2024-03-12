@@ -36,6 +36,7 @@ const router = createBrowserRouter([
     ],
   },
   {
+    //protected routes
     element: <RequiredAuth />,
     children: [
       {
