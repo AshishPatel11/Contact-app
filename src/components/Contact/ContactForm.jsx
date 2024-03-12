@@ -28,16 +28,14 @@ function ContactForm({ formType, formState, contactId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(form.current);
-    const contactData = Object.fromEntries(formData.entries());
+    const contact = Object.fromEntries(formData.entries());
 
-    if (contactData.image.name) {
-      contactData.image = await readImage(contactData.image);
-    } else contactData.image = null;
+    contact.image = contactData.image;
 
     let response;
     if (e.nativeEvent.submitter.value === 'Edit Contact')
-      response = updateContact(contactData);
-    else response = insertContact(contactData);
+      response = updateContact(contact);
+    else response = insertContact(contact);
 
     if (response.error) setFormError({ err: response.error });
     else {
@@ -56,6 +54,12 @@ function ContactForm({ formType, formState, contactId }) {
     }
   };
 
+  const changeImage = async (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const img = await readImage(e.target.files[0]);
+      setContactData((prev) => ({ ...prev, image: img }));
+    }
+  };
   return (
     <>
       <div
@@ -95,6 +99,41 @@ function ContactForm({ formType, formState, contactId }) {
             encType="multipart/form-data"
             onSubmit={handleSubmit}
           >
+            <div className="mb-3 flex items-center justify-center">
+              <label
+                htmlFor="image"
+                className=" cursor-pointer font-medium leading-6 text-gray-900"
+              >
+                <Image src={contactData.image || null} />
+              </label>
+              <div className="relative">
+                <input
+                  className="hidden"
+                  type="file"
+                  onChange={changeImage}
+                  id="image"
+                  name="image"
+                />
+                {contactData.image && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="red"
+                    className="w-6 h-6 cursor-pointer absolute top-3 right-1 z-10 bg-cyan-400 rounded-full p-1"
+                    onClick={(e) => {
+                      setContactData((prev) => ({ ...prev, image: null }));
+                    }}
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
+              </div>
+            </div>
+
             <div className="text-slate-800 text-base">
               {formType && (
                 <input
@@ -175,41 +214,6 @@ function ContactForm({ formType, formState, contactId }) {
               </p>
             </div>
 
-            <div className="mb-3">
-              <label
-                htmlFor="image"
-                className="block font-medium leading-6 text-gray-900"
-              >
-                Contact Image
-              </label>
-              <input
-                className="relative m-0 block w-full min-w-0 flex-auto rounded-md border-2 border-solid border-slate-700 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-neutral-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-neutral-100 file:px-3 file:py-[0.32rem] file:text-neutral-700 file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-neutral-200 focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none cursor-pointer"
-                type="file"
-                id="image"
-                name="image"
-              />
-            </div>
-            {contactData.image && (
-              <>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="checkbox"
-                    id="removeImage"
-                    name="removeImage"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-xl focus:ring-blue-50 focus:ring-2"
-                  />
-                  <label
-                    htmlFor="removeImage"
-                    className="text-base block font-medium text-gray-900"
-                  >
-                    Remove Current Image
-                  </label>
-                </div>
-                <div>
-                  <Image src={contactData.image} alt="" />
-                </div>
-              </>
-            )}
             <div>
               <input
                 type="submit"

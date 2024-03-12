@@ -8,6 +8,7 @@ export function insertContact(contact) {
     contact.userId = parseInt(contact.userId)
     contact.phone = parseInt(contact.phone)
     contact.contactId = parseInt(contact.contactId)
+
     if (isUnique(contact.phone, contact.userId)) {
         contacts.push(contact);
         localStorage.setItem(key, JSON.stringify(contacts))
@@ -40,8 +41,6 @@ export function updateContact(contact) {
     contact.contactId = parseInt(contact.contactId)
 
     const index = contacts.findIndex(con => con.contactId === contact.contactId)
-    if (contact.image === null) contact.image = contacts[index].image
-    if (contact.removeImage) contact.image = null
     contacts.splice(index, 1, contact)
     localStorage.setItem(key, JSON.stringify(contacts))
     return { success: "Contact Edited!", contact: contact }
