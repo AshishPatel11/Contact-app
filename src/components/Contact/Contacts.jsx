@@ -4,21 +4,19 @@ import ContactTable from './ContactTable';
 import { useEffect, useState } from 'react';
 import { searchContact, userContacts } from '../../Storage/contact';
 import { useSubmit } from '../../Context/context';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 function Contacts() {
   const [contacts, setContacts] = useState([]);
-  const [contactName, setContactName] = useState(null);
   const [isSubmitted] = useSubmit();
+  const [search] = useSearchParams();
+  const searchString = search.get('search');
 
   useEffect(() => {
-    if (contactName) {
-      setContacts(searchContact(contactName));
+    if (searchString) {
+      setContacts(searchContact(searchString));
     } else setContacts(userContacts());
-  }, [isSubmitted, contactName]);
-
-  const getSearchDataId = (contactName) => {
-    setContactName(contactName);
-  };
+  }, [isSubmitted, searchString]);
 
   if (contacts.length) {
     contacts.sort((first, second) => {
@@ -42,9 +40,9 @@ function Contacts() {
 
     return (
       <>
-        <ContactHeader searchData={getSearchDataId} />
+        <ContactHeader />
         <h1 className="font-medium text-gray-600 mx-24 lg:mx-56 mt-5">
-          {contactName ? 'Search Results:- ' : 'Total Contacts:- '}
+          {searchString ? 'Search Results:- ' : 'Total Contacts:- '}
           {contacts.length}
         </h1>
         <ContactTable>{contactList}</ContactTable>
@@ -53,7 +51,7 @@ function Contacts() {
   } else {
     return (
       <>
-        <ContactHeader searchData={getSearchDataId} />
+        <ContactHeader />
         <div className="text-center my-52 text-5xl font-bold">
           <h1>No Contacts Available !</h1>
         </div>
